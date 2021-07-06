@@ -58,15 +58,17 @@
       <div class="card">
         <div class="card-body p-0">
           <div class="input-list">
-            <div class="form-check">
+            <div class="form-check" v-for="n in numberOfShapes" :key="n">
               <input
-                type="checkbox"
+                type="radio"
                 class="form-check-input"
-                id="number-of-shapes"
+                :id="'number-of-shapes' + n"
+                :value="n"
+                v-model="shapes"
               />
-              <label class="form-check-label" for="number-of-shapes"
-                >$ 50</label
-              >
+              <label class="form-check-label" :for="'number-of-shapes' + n">
+                {{ n }}
+              </label>
             </div>
           </div>
         </div>
@@ -74,7 +76,11 @@
     </div>
 
     <div class="section mt-2">
-      <button type="submit" class="btn btn-primary btn-block btn-lg">
+      <button
+        type="submit"
+        class="btn btn-primary btn-block btn-lg"
+        :disabled="!canTransformPhotos"
+      >
         Transform
       </button>
     </div>
@@ -89,19 +95,29 @@ export default {
   data() {
     return {
       mode: null,
+      shapes: 10,
+      file: null,
     };
   },
   computed: {
     ...mapState({
       primitiveModes: (state) => state.primitive.primitiveModes,
+      numberOfShapes: (state) => state.primitive.numberOfShapes,
     }),
+    canTransformPhotos() {
+      return this.mode !== null || this.file !== null;
+    },
   },
   created() {
     this.getPrimitiveModes();
+    this.getNumberOfShapes();
   },
   methods: {
     getPrimitiveModes() {
       this.$store.dispatch("getPrimitiveModes");
+    },
+    getNumberOfShapes() {
+      this.$store.dispatch("getNumberOfShapes");
     },
   },
 };
