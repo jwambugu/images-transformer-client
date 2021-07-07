@@ -1,11 +1,16 @@
 <template>
-  <form>
+  <form enctype="multipart/form-data" @submit.prevent="transformPhotos">
     <div class="section mt-2">
       <div class="section-title">Choose Photo</div>
       <div class="card">
         <div class="card-body">
           <div class="custom-file-upload" id="file-chooser">
-            <input type="file" id="photo-upload" accept=".png, .jpg, .jpeg" />
+            <input
+              type="file"
+              id="photo-upload"
+              accept="image/*"
+              @change="uploadPhotos"
+            />
             <label for="photo-upload">
               <span>
                 <strong>
@@ -94,9 +99,10 @@ export default {
   name: "UploadTransformPhotosForm",
   data() {
     return {
-      mode: null,
+      mode: 0,
       shapes: 10,
-      file: null,
+      hasUploadedPhotos: false,
+      formData: null,
     };
   },
   computed: {
@@ -105,7 +111,7 @@ export default {
       numberOfShapes: (state) => state.primitive.numberOfShapes,
     }),
     canTransformPhotos() {
-      return this.mode !== null || this.file !== null;
+      return this.mode !== null && this.formData !== null;
     },
   },
   created() {
@@ -118,6 +124,25 @@ export default {
     },
     getNumberOfShapes() {
       this.$store.dispatch("getNumberOfShapes");
+    },
+    uploadPhotos(e) {
+      const formData = new FormData();
+      const fileList = e.target.files;
+
+      Array.from(Array(fileList.length).keys()).map((x) => {
+        formData.append("photos", fileList[x], fileList[x].name);
+      });
+
+      this.hasUploadedPhotos = true;
+      this.formData = formData;
+    },
+    transformPhotos() {
+      let formData = this.formData;
+
+      formData.append("mode", this.mode);
+      formData.append("shapes", this.shapes);
+
+      this.$store.dispatch("transformPhotos", formData);
     },
   },
 };

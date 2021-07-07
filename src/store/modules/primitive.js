@@ -36,6 +36,15 @@ const actions = {
       console.log(e);
     }
   },
+  transformPhotos: async (_, payload) => {
+    try {
+      const { data } = await axios.post("/images", payload);
+
+      console.log(data);
+    } catch (e) {
+      console.log(e);
+    }
+  },
 };
 
 export default {
