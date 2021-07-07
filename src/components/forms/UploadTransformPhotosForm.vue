@@ -94,11 +94,25 @@
 
     <div class="section mt-2">
       <button
+        :disabled="!canTransformPhotos"
+        v-if="!transformingPhotos"
         type="submit"
         class="btn btn-primary btn-block btn-lg"
-        :disabled="!canTransformPhotos"
       >
         Transform
+      </button>
+
+      <button
+        v-else
+        class="btn btn-primary btn-block btn-lg"
+        type="button"
+        disabled
+      >
+        <span
+          class="spinner-grow spinner-grow-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
       </button>
     </div>
   </form>
@@ -115,6 +129,7 @@ export default {
       shapes: 10,
       formData: null,
       photosToPreview: [],
+      transformingPhotos: false,
     };
   },
   computed: {
@@ -158,13 +173,21 @@ export default {
 
       this.formData = formData;
     },
-    transformPhotos() {
+    async transformPhotos() {
+      this.transformingPhotos = true;
+
       let formData = this.formData;
 
       formData.append("mode", this.mode);
       formData.append("shapes", this.shapes);
 
-      this.$store.dispatch("transformPhotos", formData);
+      try {
+        await this.$store.dispatch("transformPhotos", formData);
+
+        this.transformingPhotos = false;
+      } catch (e) {
+        console.log(e);
+      }
     },
   },
 };
