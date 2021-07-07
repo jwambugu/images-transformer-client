@@ -2,6 +2,7 @@
   <form enctype="multipart/form-data" @submit.prevent="transformPhotos">
     <div class="section mt-2">
       <div class="section-title">Choose Photo</div>
+
       <div class="card">
         <div class="card-body">
           <div class="custom-file-upload" id="file-chooser">
@@ -20,7 +21,7 @@
                     class="md hydrated"
                     aria-label="arrow up circle outline"
                   ></ion-icon>
-                  <i>Upload a Photo</i>
+                  <i>{{ labelText }}</i>
                 </strong>
               </span>
             </label>
@@ -29,8 +30,19 @@
       </div>
     </div>
 
+    <!--    <div class="section mt-2" v-if="photosToPreview.length">-->
+    <!--      <div-->
+    <!--        class="card bg-dark text-white"-->
+    <!--        v-for="(url, key) in photosToPreview"-->
+    <!--        :key="key"-->
+    <!--      >-->
+    <!--        <img :src="url" class="card-img overlay-img" alt="image" />-->
+    <!--      </div>-->
+    <!--    </div>-->
+
     <div class="section mt-2">
       <div class="section-title">Select a Shape To Use</div>
+
       <div class="card">
         <div class="card-body p-0">
           <div class="input-list">
@@ -101,8 +113,8 @@ export default {
     return {
       mode: 0,
       shapes: 10,
-      hasUploadedPhotos: false,
       formData: null,
+      photosToPreview: [],
     };
   },
   computed: {
@@ -112,6 +124,13 @@ export default {
     }),
     canTransformPhotos() {
       return this.mode !== null && this.formData !== null;
+    },
+    labelText() {
+      const filesCount = this.photosToPreview.length;
+
+      return !filesCount
+        ? "Upload a Photo"
+        : `${filesCount} photo(s) selected.`;
     },
   },
   created() {
@@ -131,9 +150,12 @@ export default {
 
       Array.from(Array(fileList.length).keys()).map((x) => {
         formData.append("photos", fileList[x], fileList[x].name);
+
+        let url = URL.createObjectURL(fileList[x]);
+
+        this.photosToPreview.push(url);
       });
 
-      this.hasUploadedPhotos = true;
       this.formData = formData;
     },
     transformPhotos() {

@@ -40,7 +40,9 @@ const actions = {
     try {
       const { data } = await axios.post("/images", payload);
 
-      console.log(data);
+      const { url } = data.data;
+
+      console.log(url);
     } catch (e) {
       console.log(e);
     }
