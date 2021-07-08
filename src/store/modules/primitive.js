@@ -41,6 +41,9 @@ const actions = {
     }
   },
   transformPhotos: async ({ commit, dispatch }, payload) => {
+    dispatch("setError", null);
+    commit("SET_TRANSFORMED_PHOTO_RESPONSE", null);
+
     try {
       const { data } = await axios.post("/images", payload);
 
@@ -48,6 +51,9 @@ const actions = {
     } catch (e) {
       dispatch("setError", errorHandler(e));
     }
+  },
+  clearTransformPhotosResponse: ({ commit }) => {
+    commit("SET_TRANSFORMED_PHOTO_RESPONSE", null);
   },
 };
 

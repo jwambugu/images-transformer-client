@@ -136,6 +136,7 @@ export default {
     ...mapState({
       primitiveModes: (state) => state.primitive.primitiveModes,
       numberOfShapes: (state) => state.primitive.numberOfShapes,
+      error: (state) => state.utils.error,
     }),
     canTransformPhotos() {
       return this.mode !== null && this.formData !== null;
@@ -181,13 +182,8 @@ export default {
       formData.append("mode", this.mode);
       formData.append("shapes", this.shapes);
 
-      try {
-        await this.$store.dispatch("transformPhotos", formData);
-
-        this.transformingPhotos = false;
-      } catch (e) {
-        console.log(e);
-      }
+      await this.$store.dispatch("transformPhotos", formData);
+      this.transformingPhotos = false;
     },
   },
 };
