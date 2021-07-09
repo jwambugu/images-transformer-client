@@ -24,17 +24,28 @@
         <div class="card">
           <div class="card">
             <img
-              :src="transformedPhotoResponse.url"
+              :src="transformedPhotoResponse.originalImageURL"
               class="card-img-top"
               alt="image"
             />
+
+            <h4 class="text-center mt-1 mb-1">Original Image</h4>
+
+            <img
+              :src="transformedPhotoResponse.transformedImageURL"
+              class="card-img-top"
+              alt="image"
+            />
+
+            <h4 class="text-center mt-1 mb-1">Transformed Image</h4>
+
             <div class="card-body">
               <div class="wallet-card">
                 <div class="wallet-footer">
                   <div class="item">
                     <a
-                      :href="transformedPhotoResponse.url"
-                      :download="transformedPhotoResponse.url"
+                      :href="transformedPhotoResponse.transformedImageURL"
+                      :download="transformedPhotoResponse.transformedImageURL"
                     >
                       <div class="icon-wrapper bg-info">
                         <ion-icon
